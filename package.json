@@ -1,0 +1,33 @@
+{
+    "name": "pubcrawl",
+    "version": "0.1.0",
+    "author": "Jack Coulter <jscinoz@jscinoz.so>",
+    "description": "Mailing list plugin for Haraka",
+    "dependencies": {
+        "mongoose": "2.7.x",
+        "express": "3.0.x",
+        "jade": "0.27.x",
+        "less-middleware": "0.1.x"
+    },
+    "jam": {
+        "packageDir": "frontend/public/jam",
+        "baseUrl": "frontend/public",
+        "dependencies": {
+        }
+    },
+    "devDependencies": {
+        "Haraka": "1.3.x",
+        "jamjs": "0.2.x"
+    },
+    "engines": {
+        "node": "0.6.x"
+    },
+    "scripts": {
+        "postinstall": "jam install; haraka -fi haraka > /dev/null 2>&1",
+        "start": "haraka -c haraka"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/jscinoz/pubcrawl.git"
+    }
+}

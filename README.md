@@ -1,3 +1,2 @@
-I'll merge back to master once there's something useful. If you want to watch me
-screwing around with Haraka, Mongoose, Jade and Express in the meantime, have
-a look at the "wip" branch.
+Hey look, there's something here now, not yet at a working state though... So
+little time :<
