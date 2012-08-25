@@ -3,6 +3,4 @@ extends layout
 block content
   h1=title
   p Welcome to #{title}
-  ul
-    each list in lists
-        li #{list.name} - #{list.description}
+  block listsView

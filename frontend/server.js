@@ -24,7 +24,7 @@ exports.start = function(pubcrawl) {
         app.use(express.errorHandler());
     });
 
-    app.get('/', routes.index);
+    routes.register(pubcrawl, app);
 
     http.createServer(app).listen(app.get('port'), function() {
         pubcrawl.lognotice(
