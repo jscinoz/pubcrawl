@@ -1,19 +1,15 @@
 var mongoose = require("mongoose"),
-    url = require("url"),
     config = require("../../config"),
     db = mongoose.createConnection(config.mongoUrl),
     model = require("../../model/Schemata").compile(db);
 
-exports.get_lists = function(req, res) {
+exports.get_root = function(req, res) {
     model.List.find(function(err, lists) {
         if (err) {
             res.statusCode = 500;
             res.end(err);
         } else {
-            res.render("listsView", {
-                lists: lists,
-                json: url.parse(req.url).query === "json"
-            });
+            res.render("index", { title: "Pubcrawl", lists: lists});
         }
     });
 };

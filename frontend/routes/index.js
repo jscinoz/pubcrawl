@@ -6,12 +6,19 @@ exports.register = function(pubcrawl, app) {
         if (err) pubcrawl.logerror(err);
 
         files.forEach(function(file) {
-            var routeMatch, routeMethod, routePath, routeHandler;
+            var routeMatch, routeMethod, routeName, routePath, routeHandler;
 
             if (routeMatch = file.match(ROUTEFILE_REGEX)) {
                 routeMethod = routeMatch[1];
-                routePath = "/" + routeMatch[2].replace(/_/g, "/");
-                routeHandler = require(path.join(__dirname, file));
+                routeName = routeMatch[2];
+                routeHandler = require(
+                    path.join(__dirname, file))[routeMethod + "_" + routeName];
+
+                if (routeName === "root") {
+                    routePath = "/";
+                } else {
+                    routePath = "/" + routeName.replace(/_/g, "/");
+                }
 
                 pubcrawl.loginfo("Registering " + routeMethod +
                                  " handler for path " + routePath);
@@ -19,9 +26,5 @@ exports.register = function(pubcrawl, app) {
                 app[routeMethod](routePath, routeHandler);
             }
         });
-    });
-
-    app.get("/", function(req, res){
-        res.render("index", { title: "Pubcrawl"});
     });
 }
