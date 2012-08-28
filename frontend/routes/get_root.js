@@ -1,7 +1,7 @@
 var mongoose = require("mongoose"),
-    config = require("../../config"),
+    config = require("pubcrawl/config"),
     db = mongoose.createConnection(config.mongoUrl),
-    model = require("../../model/Schemata").compile(db);
+    model = require("pubcrawl/model/Schemata").compile(db);
 
 exports.get_root = function(req, res) {
     model.List.find(function(err, lists) {

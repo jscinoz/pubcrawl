@@ -11,8 +11,9 @@ exports.register = function(pubcrawl, app) {
             if (routeMatch = file.match(ROUTEFILE_REGEX)) {
                 routeMethod = routeMatch[1];
                 routeName = routeMatch[2];
-                routeHandler = require(
-                    path.join(__dirname, file))[routeMethod + "_" + routeName];
+                routeHandler = routeMethod + "_" + routeName;
+                routeHandler = require("pubcrawl/frontend/routes/" +
+                                       routeHandler)[routeHandler];
 
                 if (routeName === "root") {
                     routePath = "/";

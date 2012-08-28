@@ -3,9 +3,9 @@ var fs = require("fs"),
     mongoose = require("mongoose"),
     pubcrawl = exports,
     self = this,
-    config = require(path.join(__dirname, "../../config")),
+    config = require("pubcrawl/config"),
     db = mongoose.createConnection(config.mongoUrl),
-    frontendServer = require(path.join(__dirname, "../../frontend/server"));
+    frontendServer = require("pubcrawl/frontend/server");
 
 ["CONT", "DENY", "DENYSOFT", "DENYDISCONNECT", "DISCONNECT","OK",
  "HOOK_NEXT"].forEach(function(constant) {
