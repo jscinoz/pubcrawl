@@ -3,9 +3,10 @@ var mongoose = require("mongoose"),
     db = mongoose.createConnection(config.mongoUrl),
     model = require("../../model/Schemata").compile(db);
 
-exports.hook_rcpt = function(pubcrawl, next, connection, params) {
+exports.hook_rcpt = function(next, connection, params) {
     var destHost = params[0].host,
-        listName = params[0].user;
+        listName = params[0].user,
+        pubcrawl = this;
 
     if (destHost === config.serverName) {
         model.List.find({name: listName}, function(err, list) {

@@ -5,7 +5,6 @@ var fs = require("fs"),
     self = this,
     config = require(path.join(__dirname, "../../config")),
     db = mongoose.createConnection(config.mongoUrl),
-    hooks = require(path.join(__dirname, "../../plugin/hooks")),
     frontendServer = require(path.join(__dirname, "../../frontend/server"));
 
 ["CONT", "DENY", "DENYSOFT", "DENYDISCONNECT", "DISCONNECT","OK",
@@ -15,7 +14,7 @@ var fs = require("fs"),
 
 db.on("error", pubcrawl.logerror.bind(pubcrawl, "mongodb error: "));
 
-hooks.register(pubcrawl);
+pubcrawl.hook_rcpt = require("pubcrawl/plugin/hooks/hook_rcpt").hook_rcpt;
 
 if (config.frontendEnabled) {
     frontendServer.start(pubcrawl);
