@@ -12,7 +12,7 @@ var fs = require("fs"),
     pubcrawl[constant] = self[constant];
 });
 
-db.on("error", pubcrawl.logerror.bind(pubcrawl, "mongodb error: "));
+db.on("error", pubcrawl.logerror.bind(pubcrawl, "[mongoose] "));
 
 pubcrawl.hook_rcpt = require("pubcrawl/plugin/hooks/hook_rcpt").hook_rcpt;
 
