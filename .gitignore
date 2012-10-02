@@ -1,7 +1,7 @@
 .*.sw[op]
 .sw[op]
 npm-debug.log
-/frontend/public/css/*.css
-/frontend/public/jam
+/frontend/static/css/*.css
+/frontend/static/jam
 /node_modules
 /haraka
