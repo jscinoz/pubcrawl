@@ -24,7 +24,7 @@ module.exports = function (next) {
     db.on("error", app.logerror.bind(app, "[MongoDB] "));
 
     db.once("open", function() {
-        var WebUIServer = require("./webui/server");
+        var WebUIServer = require("./../webui/server");
 
         WebUIServer.start(app);
 

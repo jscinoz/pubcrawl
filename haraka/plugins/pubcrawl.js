@@ -1,1 +1,1 @@
-../../src/index.js
+../../src/pubcrawl.js
