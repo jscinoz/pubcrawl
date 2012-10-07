@@ -4,6 +4,7 @@ var mongoose = require("mongoose"),
 
 var Subscriber = new Schema({
     address: String,
+    moderated: Boolean,
     lists: [List]
 });
 
