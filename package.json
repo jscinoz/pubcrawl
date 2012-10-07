@@ -10,20 +10,11 @@
         "Haraka": "1.3.x",
         "less-middleware": "0.1.x"
     },
-    "jam": {
-        "packageDir": "frontend/public/jam",
-        "baseUrl": "frontend/public",
-        "dependencies": {
-        }
-    },
-    "devDependencies": {
-        "jamjs": "0.2.x"
-    },
     "engines": {
         "node": "0.6.x"
     },
     "scripts": {
-        "postinstall": "jam install; haraka -fi haraka > /dev/null 2>&1",
+        "postinstall": "haraka -fi haraka > /dev/null 2>&1",
         "start": "haraka -c haraka"
     },
     "repository": {
