@@ -5,6 +5,7 @@ var mongoose = require("mongoose"),
 
 var List = new Schema({
     name: String,
+    displayName: String,
     description: String,
     moderated: Boolean,
     subscribers: [Subscriber],
