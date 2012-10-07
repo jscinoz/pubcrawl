@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h2 Create list
+  form(name="createList", method="post", action="/createList",
+       class="form-horizontal")
+    .control-group
+      label(for="listName", class="control-label") List Name
+      .controls
+        input(name="listName", type="text", required,
+              pattern="^[a-zA-Z0-9_\-]+$")
+        span(class="help-block") (no spaces, case-insensitive, a-z, 0-9, _, -)
+    .control-group
+      label(for="displayName", class="control-label") Display Name
+      .controls
+        input(name="displayName", type="text")
+    .control-group
+      label(for="description", class="control-label") Description
+      .controls
+        textarea(name="description")
+    .control-group
+      label(for="moderated", class="control-label") Moderated?
+      .controls
+        input(name="moderated", type="checkbox")
+    .control-group
+      .controls
+        button(class="btn btn-primary") Create list

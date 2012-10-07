@@ -1,4 +1,20 @@
 extends layout
 
 block content
-    p Sup assdouche?
+  h2 Lists
+  if (lists.length)
+    ul
+      for list in lists
+        li
+          a(href="/archive/#{list.name}")
+            | #{list.displayName ? list.displayName : list.name} - #{list.description}
+          form(name="subscribe-#{list.id}", action="/subscribe", method="post",
+               class="form-inline")
+            input(type="hidden", name="listId", value="#{list.id}")
+            input(type="email", name="email", required, placeholder="Email",
+                  class="input-medium")
+            button(class="btn btn-primary") Subscribe
+            button(class="btn", formaction="/unsubscribe") Unsubscribe
+  else
+    p No lists defined
+  a(href="/createList", class="btn btn-primary") Create new list
