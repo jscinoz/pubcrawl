@@ -1,5 +1,4 @@
-.*.sw[op]
-.sw[op]
+.*.sw?
 npm-debug.log
 /src/webui/static/css/*.css
 /node_modules
