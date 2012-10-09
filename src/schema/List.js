@@ -4,10 +4,16 @@ var mongoose = require("mongoose"),
     Message = require("./Message");
 
 var List = new Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
     displayName: String,
     description: String,
-    moderated: Boolean,
+    moderated: {type: Boolean, required: true, default: false},
     subscribers: [Subscriber],
     messages: [Message]
 });
