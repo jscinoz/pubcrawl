@@ -7,6 +7,7 @@ exports.start = function(app) {
         webui = express(),
         db = app.server.notes.db,
         List = db.model("List", require("./../schema/List")),
+        Subscriber = db.model("Subscriber", require("./../schema/Subscriber")),
         STATIC_DIR = __dirname + "/static";
 
     webui.configure(function() {
@@ -38,6 +39,41 @@ exports.start = function(app) {
     webui.get("/create-list", function(req, res) {
         res.render("create-list", {
             title: "Pubcrawl"
+        });
+    });
+
+    webui.post("/subscribe", function(req, res) {
+        var params = req.body;
+
+        // TODO: request validation
+        List.findById(params.listId, function(err, list) {
+            if (err) return renderError(err, res); 
+
+            Subscriber.findOne({"email": params.email}, function(err,
+                                                                 subscriber) {
+                if (!subscriber) {
+                    subscriber = new Subscriber({
+                        email: params.email
+                    });
+
+                    subscriber.save(c);
+                } else c();
+
+                // Continuation
+                function c() {
+                    list.subscribe(subscriber, function(err) {
+                        if (err) return renderError(err, res);
+
+                        req.flash("successMsgHead", "Confirmation required");
+                        req.flash("successMsgBody",
+                            "A confirmation email has been sent to " + 
+                            subscriber.email + ". Please click the link in " +
+                            "this email to confirm your subscription");
+
+                        res.redirect("/");
+                    });
+                }
+            });
         });
     });
 

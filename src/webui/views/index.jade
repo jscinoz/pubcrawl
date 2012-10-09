@@ -12,7 +12,12 @@ block content
       for list in lists
         li
           a(href="/archive/#{list.name}")
-            | #{list.displayName ? list.displayName : list.name} - #{list.description}
+            | #{list.displayName ? list.displayName : list.name}
+            | #{list.description ? " - " + list.description : ""}
+          if (list.subscribers.length)
+              ul
+                for subscriber in list.subscribers
+                  li= subscriber.email
           form(name="subscribe-#{list.id}", action="/subscribe", method="post",
                class="form-inline")
             input(type="hidden", name="listId", value="#{list.id}")

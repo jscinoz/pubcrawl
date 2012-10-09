@@ -18,4 +18,11 @@ var List = new Schema({
     messages: [Message]
 });
 
+List.method("subscribe", function(subscriber, cb) {
+    // TODO: Double-sub prevention
+    this.subscribers.push(subscriber);
+
+    this.save(cb);
+});
+
 module.exports = List;
