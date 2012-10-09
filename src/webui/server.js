@@ -15,7 +15,10 @@ exports.start = function(app) {
         webui.use(require("less-middleware")({src: STATIC_DIR, compress: true}));
         webui.use(express.static(STATIC_DIR));
         webui.use(express.bodyParser());
+        webui.use(express.cookieParser());
         webui.use(express.methodOverride());
+        webui.use(express.session({secret: "" + Math.random()}));
+        webui.use(require("connect-flash")());
         webui.use(webui.router);
     });
 
@@ -25,7 +28,9 @@ exports.start = function(app) {
 
             res.render("index", {
                 title: "Pubcrawl",
-                lists: lists
+                lists: lists,
+                successMsgHead: req.flash("successMsgHead")[0],
+                successMsgBody: req.flash("successMsgBody")[0]
             });
         });
     });
@@ -47,13 +52,16 @@ exports.start = function(app) {
                 moderated: params.moderated === "true"
             });
 
-        list.save(function(err, list) {
-            if (err) return renderError(err, req); 
+        app.logdebug(list);
 
-            res.render("listCreated", {
-                title: "Pubcrawl",
-                list: list
-            });
+        list.save(function(err, list) {
+            if (err) return renderError(err, res); 
+        
+            req.flash("successMsgHead", "List created");
+            req.flash("successMsgBody", 
+                "List '" + (list.displayName ? list.displayName : list.name) +
+                "' created");
+            res.redirect("/");
         });
     });
 

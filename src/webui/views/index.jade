@@ -1,6 +1,11 @@
 extends layout
 
 block content
+  if (successMsgHead && successMsgBody)
+    .alert.alert-success.alert-block
+      h3= successMsgHead
+      p= successMsgBody
+
   h2 Lists
   if (lists.length)
     ul
