@@ -11,6 +11,7 @@ exports.start = function(app) {
         STATIC_DIR = __dirname + "/static";
 
     webui.configure(function() {
+        webui.set("title", "Pubcrawl");
         webui.set("views", __dirname + "/views");
         webui.set("view engine", "jade");
         webui.use(require("less-middleware")({src: STATIC_DIR, compress: true}));
@@ -25,10 +26,10 @@ exports.start = function(app) {
 
     webui.get("/", function(req, res) {
         List.find(function(err, lists) {
-            if (err) return renderError(err, req); 
+            if (err) return renderError(err, res); 
 
             res.render("index", {
-                title: "Pubcrawl",
+                title: webui.get("title"),
                 lists: lists,
                 successMsgHead: req.flash("successMsgHead")[0],
                 successMsgBody: req.flash("successMsgBody")[0]
@@ -38,7 +39,7 @@ exports.start = function(app) {
 
     webui.get("/create-list", function(req, res) {
         res.render("create-list", {
-            title: "Pubcrawl"
+            title: webui.get("title")
         });
     });
 
@@ -103,5 +104,5 @@ exports.start = function(app) {
 
     webui.listen("3000");
 
-    app.logdebug("WebUI started");
+    app.loginfo("Pubcrawl webui started");
 }
