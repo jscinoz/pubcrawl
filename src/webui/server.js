@@ -27,17 +27,16 @@ exports.start = function(app) {
                 title: "Pubcrawl",
                 lists: lists
             });
-
         });
     });
 
-    webui.get("/createList", function(req, res) {
-        res.render("createList", {
+    webui.get("/create-list", function(req, res) {
+        res.render("create-list", {
             title: "Pubcrawl"
         });
     });
 
-    webui.post("/createList", function(req, res) {
+    webui.post("/create-list", function(req, res) {
         // TODO: request validation
 
         var params = req.body,
