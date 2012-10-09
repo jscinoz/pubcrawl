@@ -3,9 +3,12 @@ var mongoose = require("mongoose"),
     List = require("./List");
 
 var Subscriber = new Schema({
-    address: String,
-    moderated: Boolean,
-    lists: [List]
+    email: String,
+    moderated: Boolean
+});
+
+Subscriber.method("lists", function(cb) {
+    this.model("List").find({"subscribers._id": this.id}, cb);
 });
 
 module.exports = Subscriber;
