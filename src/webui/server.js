@@ -1,3 +1,5 @@
+"use strict";
+
 function renderError(err, res) {
     res.send(err);
 }

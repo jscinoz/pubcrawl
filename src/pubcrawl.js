@@ -1,3 +1,5 @@
+"use strict";
+
 // Export the constants needed for next()
 exports.CONT = this.CONT;
 exports.DENY = this.DENY;

@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = function(next, conn, params) {
     var app = this
         server = app.server,

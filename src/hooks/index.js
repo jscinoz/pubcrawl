@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports.register = function(exports) {
     exports.hook_init_master = require("./init_master").bind(exports);
     exports.hook_rcpt = require("./rcpt").bind(exports);
