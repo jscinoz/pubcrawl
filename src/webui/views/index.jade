@@ -6,6 +6,11 @@ block content
       h3= successMsgHead
       p= successMsgBody
 
+  if (errorMsgHead && errorMsgBody)
+    .alert.alert-error.alert-block
+      h3= errorMsgHead
+      p= errorMsgBody
+
   h2 Lists
   if (lists.length)
     ul
