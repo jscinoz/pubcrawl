@@ -22,26 +22,45 @@ var List = new Schema({
     messages: [Message]
 });
 
+List.method("unsubscribe", function(subscriber) {
+    var list = this,
+        subscribers = list.subscribers,
+        err;
+
+    for (var i = 0, ii = subscribers.length; i < ii; ++i) {
+        if (subscribers[i].get("id") === subscriber.get("id")) {
+            subscribers.splice(i, 1);
+
+            return Q.ninvoke(list, "save")
+                .then(function() {
+                    return subscriber.unsubscribe(list);
+                });
+        }
+    }
+
+    err = new Error("Subscriber not found");
+    err.name = "NoSuchSubscriber";
+    err.list = list;
+    err.subscriber = subscriber;
+
+    throw err;
+});
+
 List.method("subscribe", function(subscriber) {
     var list = this,
         subscribers = list.subscribers,
-        alreadySubscribed = false,
-        Subscription = this.model("Subscription"),
-        subscription;
+        alreadySubscribed = false;
 
     for (var i = 0, ii = subscribers.length; i < ii; ++i) {
         if (subscribers[i].get("id") === subscriber.get("id")) {
             alreadySubscribed = true;
+
             break;
         };
     }
     
     if (!alreadySubscribed) {
-        subscription = new Subscription({list: list});
-
-        subscriber.subscriptions.push(subscription);
-
-        return Q.ninvoke(subscriber, "save")
+        return subscriber.subscribe(list)
             .then(function() {
                 subscribers.push(subscriber);
 

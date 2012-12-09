@@ -22,6 +22,29 @@ var Subscriber = new Schema({
     subscriptions: [Subscription]
 });
 
+Subscriber.method("unsubscribe", function(list) {
+    var subscriber = this,
+        subscriptions = subscriber.subscriptions;
+
+    for (var i = 0, ii = subscriptions.length; i < ii; ++i) {
+        if (subscriptions[i].list.toString() === list.get("id")) {
+            subscriptions.splice(i, 1);
+
+            return Q.ninvoke(subscriber, "save");
+        }
+    }
+});
+
+Subscriber.method("subscribe", function(list) {
+    var subscriber = this,
+        subscriptions = subscriber.subscriptions,
+        Subscription = this.model("Subscription");
+
+    subscriptions.push(new Subscription({list: list}));
+
+    return Q.ninvoke(subscriber, "save");
+});
+
 Subscriber.method("getSubscribedLists", function() {
     return Q.ninvoke(this.model("List"), "find", {"subscribers._id": this.id});
 });

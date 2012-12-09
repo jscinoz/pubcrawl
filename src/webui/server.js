@@ -79,6 +79,8 @@ exports.start = function(app) {
                 return Q.ninvoke(List, "findById", params.listId)
                     .then(function(list) {
                         return list.subscribe(subscriber);
+                    }).then(function() {
+                        return subscriber;
                     });
             })
             .then(function(subscriber) {
@@ -99,7 +101,8 @@ exports.start = function(app) {
                     req.flash("errorMsgHead", "Already subscribed");
                     req.flash("errorMsgBody",
                         "The email address " + err.subscriber.email +
-                        " is already subscribed to the list " + err.list.name);
+                        " is already subscribed to the list " +
+                        (err.list.displayName || err.list.name));
                     res.redirect("/");
                 } else {
                     renderError(app, res, err);
@@ -108,8 +111,49 @@ exports.start = function(app) {
     });
 
     webui.post("/unsubscribe", function(req, res) {
+        var params = req.body;
 
+        Q.ninvoke(Subscriber, "findOne", {"email": params.email})
+            .then(function(subscriber) {
+                if (!subscriber) {
+                    throw new Error("Subscriber " + params.email +
+                                    " not found");
+                }
 
+                app.logdebug("Removing subscriber " + subscriber.email);
+
+                return Q.ninvoke(List, "findById", params.listId)
+                    .then(function(list) {
+                        return list.unsubscribe(subscriber)
+                            .then(function() {
+                                return [subscriber, list];
+                            });
+                    });
+            })
+            .spread(function(subscriber, list) {
+                req.flash("successMsgHead", "Unsubscribe successful");
+                req.flash("successMsgBody",
+                    subscriber.email + " has been successfully unsubscribed " +
+                    "from list " + (list.displayName || list.name));
+    
+                res.redirect("/");
+            })
+            .fail(function(err) {
+                if (err.name === "NoSuchSubscriber") {
+                    app.logdebug("Attempted to remove non-existant " +
+                        "subscriber " + err.subscriber.email + " from list " +
+                        (err.list.displayName || err.list.name));
+
+                    req.flash("errorMsgHead", "No such subscriber");
+                    req.flash("errorMsgBody",
+                        "The email address " + err.subscriber.email +
+                        " is not subscribed to the list " +
+                        (err.list.displayName || err.list.name));
+                    res.redirect("/");
+                } else {
+                    renderError.bind(this, app, res)
+                }
+            });
     });
 
     webui.post("/create-list", function(req, res) {
