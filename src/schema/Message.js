@@ -2,14 +2,22 @@
 
 var mongoose = require("mongoose"),
     Schema = mongoose.Schema,
-    Attachment = require("./Attachment");
+    Attachment = require("./Attachment"),
+    ObjectId = Schema.ObjectId,
+    Message;
 
-var Message = new Schema({
+Message = new Schema({
     headers: [{
-        name: String, value: String
+        name: {type: String, index: true},
+        value: String
     }],
     body: String,
-    attachments: [Attachment]
+    attachments: [Attachment],
+    list: {type: ObjectId, ref: "List"}
+});
+
+Message.method("getOwnerList", function() {
+    return Q.ninvoke(this.model("List"), "findOne", {"messages._id": this.id});
 });
 
 module.exports = Message;

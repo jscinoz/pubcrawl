@@ -3,7 +3,7 @@
 var mongoose = require("mongoose"),
     Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId,
-    List = require("./List"),
+    Subscription = require("./Subscription"),
     Q = require("q");
 
 
@@ -19,10 +19,7 @@ var Subscriber = new Schema({
         sparse: true,
         index: true
     },
-    moderated: {type: Boolean, required: true, default: false},
-    lists: [{type: ObjectId, ref: "List"}]
-    // TODO: Need to define a field here to store confirmation status per list
-    // maybe bring back the SubscribedList type...
+    subscriptions: [Subscription]
 });
 
 Subscriber.method("getSubscribedLists", function() {

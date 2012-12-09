@@ -22,15 +22,12 @@ var List = new Schema({
     messages: [Message]
 });
 
-List.method("unsubscribe", function(subscriber) {
-    // TODO
-
-});
-
 List.method("subscribe", function(subscriber) {
     var list = this,
         subscribers = list.subscribers,
-        alreadySubscribed = false;
+        alreadySubscribed = false,
+        Subscription = this.model("Subscription"),
+        subscription;
 
     for (var i = 0, ii = subscribers.length; i < ii; ++i) {
         if (subscribers[i].get("id") === subscriber.get("id")) {
@@ -40,8 +37,16 @@ List.method("subscribe", function(subscriber) {
     }
     
     if (!alreadySubscribed) {
-        subscribers.push(subscriber);
-        return Q.ninvoke(list, "save");
+        subscription = new Subscription({list: list});
+
+        subscriber.subscriptions.push(subscription);
+
+        return Q.ninvoke(subscriber, "save")
+            .then(function() {
+                subscribers.push(subscriber);
+
+                return Q.ninvoke(list, "save");
+            });
     } else {
         return Q.fcall(function() {
             var err = new Error("User already subscribed");

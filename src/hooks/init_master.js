@@ -23,6 +23,7 @@ module.exports = function (next) {
     // Nothing else should be added to the global server state
     Object.freeze(server.notes);
 
+    // TODO: Properly log otherwise uncaught db errors
     db.on("error", app.logerror.bind(app, "[MongoDB] "));
 
     db.once("open", function() {

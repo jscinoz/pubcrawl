@@ -13,6 +13,9 @@ exports.start = function(app) {
         db = app.server.notes.db,
         List = db.model("List", require("./../schema/List")),
         Subscriber = db.model("Subscriber", require("./../schema/Subscriber")),
+        // This isn't actually used here, but we need to model it incase this
+        // is the first run against a blank DB
+        Subscription = db.model("Subscription", require("./../schema/Subscription")),
         Q = require("q"),
         STATIC_DIR = __dirname + "/static";
 
@@ -75,9 +78,7 @@ exports.start = function(app) {
             .then(function(subscriber) {
                 return Q.ninvoke(List, "findById", params.listId)
                     .then(function(list) {
-                        return list.subscribe(subscriber)
-                    }).then(function() {
-                        return subscriber;
+                        return list.subscribe(subscriber);
                     });
             })
             .then(function(subscriber) {
@@ -104,6 +105,11 @@ exports.start = function(app) {
                     renderError(app, res, err);
                 }
             });
+    });
+
+    webui.post("/unsubscribe", function(req, res) {
+
+
     });
 
     webui.post("/create-list", function(req, res) {
