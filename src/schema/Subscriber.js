@@ -8,8 +8,8 @@ var mongoose = require("mongoose"),
 
 
 var Subscriber = new Schema({
-      // TODO: Create proper email address type, with conveneince methods
-      // similar to Haraka's Address object
+    // TODO: Create proper email address type, with conveneince methods
+    // similar to Haraka's Address object
     email: {
         type: String,
         required: true,
