@@ -19,7 +19,9 @@ var Subscriber = new Schema({
         sparse: true,
         index: true
     },
-    subscriptions: [Subscription]
+    subscriptions: [Subscription],
+    // Subscriber's global moderation status
+    moderated: {type: Boolean, required: true, default: false}
 });
 
 Subscriber.method("unsubscribe", function(list) {
@@ -45,8 +47,28 @@ Subscriber.method("subscribe", function(list) {
     return Q.ninvoke(subscriber, "save");
 });
 
+// Returns a boolean for whether or not the subscriber is subscribed to the
+// given list
+Subscriber.method("isSubscribedTo", function(list) {
+    var subscribers = list.subscribers;
+
+    for (var i = 0, ii = subscribers.length; i < ii; ++i) {
+        if (subscribers[i].get("id") === this.get("id")) return true;
+    }
+
+    return false;
+});
+
+// Returns a promise for an array of Lists that the user is subscribed to
 Subscriber.method("getSubscribedLists", function() {
     return Q.ninvoke(this.model("List"), "find", {"subscribers._id": this.id});
+});
+
+// Finds a subscriber by an instance of Haraka's Address object
+Subscriber.static("findByAddress", function(address) {
+    var email = address.toString().replace(/^<|>$/g, "");
+
+    return Q.ninvoke(this, "findOne", {email: email});
 });
 
 module.exports = Subscriber;
