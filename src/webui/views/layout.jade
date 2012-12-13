@@ -8,4 +8,12 @@ html
     link(rel="stylesheet", href="css/style.css")
   body(class="container")
     h1 Pubcrawl
+    if (successMsgHead && successMsgBody)
+      .alert.alert-success.alert-block
+        h3= successMsgHead
+        p= successMsgBody
+    if (errorMsgHead && errorMsgBody)
+      .alert.alert-error.alert-block
+        h3= errorMsgHead
+        p= errorMsgBody
     block content
