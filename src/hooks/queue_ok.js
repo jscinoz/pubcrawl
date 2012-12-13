@@ -1,10 +1,10 @@
 "use strict";
 
 module.exports = function(next, conn, params) {
-    var app = this
+    var app = this,
         server = app.server,
-        db = server.notes.db;
-        message = conn.transaction
+        db = server.notes.db,
+        message = conn.transaction;
 
     app.logdebug("XXX: Archive");
 

@@ -13,7 +13,7 @@ module.exports = function(next, conn, params) {
     //      upon approval: pass message
     //      upon rejection: send rejection message with reason(s) why
     //    false: pass message
-    // 3. Recipient list is moderated?
+    // 3. Recipient list is moderated (and user is moderated for this list)?
     //    true: Add message to list moderation queue
     //      upon approval: pass message
     //      upon rejection: send rejection message with reason(s) why
