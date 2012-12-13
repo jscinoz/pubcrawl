@@ -80,7 +80,7 @@ List.method("subscribe", function(subscriber) {
 });
 
 List.static("findByName", function(name) {
-    return Q.ninvoke(this, "find", {name: name});
+    return Q.ninvoke(this, "findOne", {name: name});
 });
 
 module.exports = List;
