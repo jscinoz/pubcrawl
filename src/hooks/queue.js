@@ -1,7 +1,8 @@
 "use strict";
 
 module.exports = function(next, conn, params) {
-    var app = this,
+    var logger = require("Haraka/logger"),
+        constants = require("Haraka/constants")
         message = conn.transaction,
         list = conn.notes.list,
         user = conn.notes.user;
@@ -19,8 +20,13 @@ module.exports = function(next, conn, params) {
     //      upon rejection: send rejection message with reason(s) why
     //    false: pass message
     message.header.lines().forEach(function(x) {
-        app.logdebug("XXX: " + x);
+//        logger.logdebug("XXX: " + x);
     }, this);
 
-    next(app.OK);
+
+    // Set connection relaying, so that outbound messages will be sent
+    // conn.relaying = true;
+
+
+    next(constants.ok);
 }

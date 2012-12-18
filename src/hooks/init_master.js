@@ -1,37 +1,32 @@
 "use strict";
 
+// Configure and start the plugin + webui server
 module.exports = function (next) {
-    // Configure the server
-    var app = this,
-        server = app.server,
-        config = server.notes.config = app.config.get("pubcrawl", "json"),
-        db;
+    var logger = require("Haraka/logger"), 
+        config = require("Haraka/config").get("pubcrawl", "json"),
+        mongoose = require("mongoose"),
+        db = mongoose.connection;
 
     if (!config) {
-        app.logerror("Error loading pubcrawl configuration, cannot continue.");
+        logger.logerror("Error loading pubcrawl configuration, cannot continue.");
         return next();
     }
     
     // TODO: Config validation
 
-    db = server.notes.db
-       = require("mongoose").createConnection(config.dbHost, config.dbName);
+    mongoose.connect(config.dbHost, config.dbName);
 
-    // Server config is immutable
-    Object.freeze(server.notes.config);
-
-    // Nothing else should be added to the global server state
-    Object.freeze(server.notes);
+    // TODO: Model all schemas
 
     // TODO: Properly log otherwise uncaught db errors
-    db.on("error", app.logerror.bind(app, "[MongoDB] "));
+    db.on("error", logger.logerror.bind(this, "[MongoDB] "));
 
     db.once("open", function() {
-        var WebUIServer = require("./../webui/server");
+        var WebUIServer = require("../webui/server");
 
-        WebUIServer.start(app);
+        WebUIServer.start();
 
-        app.loginfo("Pubcrawl mailing list plugin initialised"); 
+        logger.loginfo("Pubcrawl mailing list plugin initialised"); 
 
         next();
     });

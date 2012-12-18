@@ -4,6 +4,7 @@ var mongoose = require("mongoose"),
     Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId,
     Subscription = require("./Subscription"),
+    Address = require("Haraka/address").Address,
     Q = require("q");
 
 
@@ -22,6 +23,16 @@ var Subscriber = new Schema({
     subscriptions: [Subscription],
     // Subscriber's global moderation status
     moderated: {type: Boolean, required: true, default: false}
+});
+
+
+// Virtual field for email as Haraka Address
+Subscriber.virtual("address").get(function() {
+    var parts = this.email.split("@"),
+        user = parts[0],
+        host = parts[1];
+
+    return new Address(user, host);
 });
 
 Subscriber.method("unsubscribe", function(list) {
@@ -57,6 +68,24 @@ Subscriber.method("isSubscribedTo", function(list) {
     }
 
     return false;
+});
+
+// Returns a boolean for whether or not the subscriber has responded to the
+// confirmation message for the given list
+Subscriber.method("isConfirmedFor", function(list) {
+    var subscriptions = this.subscriptions,
+        subscription;
+
+    for (var i = 0, ii = subscriptions.length; i < ii; ++i) {
+        subscription = subscriptions[i];
+
+        if (subscription.get("list").toString() === list.get("id")) {
+            return subscription.confirmed;
+        }
+    }
+
+    // XXX: Should we throw an exception if we reach here (i.e. didn't
+    // find a subscription for the list)
 });
 
 // Returns a promise for an array of Lists that the user is subscribed to

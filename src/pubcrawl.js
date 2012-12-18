@@ -1,16 +1,9 @@
 "use strict";
 
-// Export the constants needed for next()
-exports.CONT = this.CONT;
-exports.DENY = this.DENY;
-exports.DENYSOFT = this.DENYSOFT;
-exports.DENYDISCONNECT = this.DENYDISCONNECT;
-exports.DISCONNECT = this.DISCONNECT;
-exports.OK = this.OK;
-exports.HOOK_NEXT = this.HOOK_NEXT;
+var hooks = require("../../src/hooks");
 
-// Export the 'server' object
-exports.server = this.server;
-
-// Register hooks
-require("./../../src/hooks").register(exports);
+exports.hook_init_master = hooks.init_master;
+exports.hook_rcpt = hooks.rcpt;
+exports.hook_rcpt_ok = hooks.rcpt_ok;
+exports.hook_queue = hooks.queue;
+exports.hook_queue_ok = hooks.queue_ok;
