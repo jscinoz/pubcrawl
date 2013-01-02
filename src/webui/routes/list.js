@@ -2,6 +2,7 @@
 
 var Q = require("q"),
     mongoose = require("mongoose"),
+    logger = require("Haraka/logger"),
     List = mongoose.model("List", require("../../schema/List")), 
     Subscriber = mongoose.model("Subscriber", require("../../schema/Subscriber")), 
     renderError = require("../util").renderError;
@@ -40,15 +41,12 @@ exports.subscribe = function(req, res) {
     Q.ninvoke(Subscriber, "findOne", {"email": params.email})
         .then(function(subscriber) {
             if (!subscriber) {
-                app.logdebug("Creating new subscriber with address " +
+                logger.logdebug("Creating new subscriber with address " +
                              params.email);
 
                 subscriber = new Subscriber({
                     email: params.email
                 });
-
-
-                // TODO: Send confirmation message
 
                 return Q.ninvoke(subscriber, "save")
                     .then(function() {
@@ -56,8 +54,8 @@ exports.subscribe = function(req, res) {
                     });
             }
 
-            app.logdebug("Found existing subscriber with address " +
-                         params.email);
+            logger.logdebug("Found existing subscriber with address " +
+                            params.email);
 
             return subscriber;
         })
@@ -80,9 +78,9 @@ exports.subscribe = function(req, res) {
         })
         .fail(function(err) {
             if (err.name === "AlreadySubscribed") {
-                app.logdebug("Duplicate subscription attempt for address " +
-                            err.subscriber.email + " to list " +
-                            err.list.name);
+                logger.logdebug("Duplicate subscription attempt for address " +
+                                err.subscriber.email + " to list " +
+                                err.list.name);
 
                 req.flash("errorMsgHead", "Already subscribed");
                 req.flash("errorMsgBody",
@@ -106,7 +104,7 @@ exports.unsubscribe = function(req, res) {
                                 " not found");
             }
 
-            app.logdebug("Removing subscriber " + subscriber.email);
+            logger.logdebug("Removing subscriber " + subscriber.email);
 
             return Q.ninvoke(List, "findById", params.listId)
                 .then(function(list) {
@@ -126,7 +124,7 @@ exports.unsubscribe = function(req, res) {
         })
         .fail(function(err) {
             if (err.name === "NoSuchSubscriber") {
-                app.logdebug("Attempted to remove non-existant " +
+                logger.logdebug("Attempted to remove non-existant " +
                     "subscriber " + err.subscriber.email + " from list " +
                     (err.list.displayName || err.list.name));
 
@@ -137,7 +135,7 @@ exports.unsubscribe = function(req, res) {
                     (err.list.displayName || err.list.name));
                 res.redirect("/");
             } else {
-                renderError(app, res);
+                renderError(res, err);
             }
         });
 };
