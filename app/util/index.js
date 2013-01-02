@@ -7,4 +7,4 @@ exports.renderError = function renderError(res, err) {
     logger.logdebug(err.stack);
 
     res.send(err.stack);
-}
+};

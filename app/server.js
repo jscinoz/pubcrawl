@@ -18,7 +18,9 @@ exports.start = function() {
 
         webui.set("views", __dirname + "/views");
         webui.set("view engine", "jade");
-        webui.use(require("less-middleware")({src: STATIC_DIR, compress: true}));
+        webui.use(
+            require("less-middleware")({src: STATIC_DIR, compress: true})
+        );
         webui.use(express.static(STATIC_DIR));
         webui.use(express.bodyParser());
         webui.use(express.cookieParser());
@@ -38,4 +40,4 @@ exports.start = function() {
     webui.listen("3000");
 
     logger.loginfo("Pubcrawl webui started");
-}
+};

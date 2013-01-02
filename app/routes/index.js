@@ -2,7 +2,7 @@
 
 var Q = require("q"),
     mongoose = require("mongoose"),
-    List = mongoose.model("List", require("pubcrawl/lib/schema/List")),
+    List = mongoose.model("List", require("../../lib/schema/List")),
     renderError = require("../util").renderError;
 
 exports.root = function(req, res) {

@@ -3,9 +3,9 @@
 var Q = require("q"),
     mongoose = require("mongoose"),
     logger = require("Haraka/logger"),
-    List = mongoose.model("List", require("pubcrawl/lib/schema/List")), 
+    List = mongoose.model("List", require("../../lib/schema/List")),
     Subscriber = mongoose.model("Subscriber",
-                                require("pubcrawl/lib/schema/Subscriber")), 
+                                require("../../lib/schema/Subscriber")),
     renderError = require("../util").renderError;
 
 exports.create = function(req, res) {
@@ -24,10 +24,12 @@ exports.create = function(req, res) {
             });
 
         list.save(function(err, list) {
-            if (err) return renderError(err, res); 
+            if (err) {
+                return renderError(err, res);
+            }
         
             req.flash("successMsgHead", "List created");
-            req.flash("successMsgBody", 
+            req.flash("successMsgBody",
                 "List '" + (list.displayName ? list.displayName : list.name) +
                 "' created");
             res.redirect("/");
@@ -71,7 +73,7 @@ exports.subscribe = function(req, res) {
         .then(function(subscriber) {
             req.flash("successMsgHead", "Confirmation required");
             req.flash("successMsgBody",
-                "A confirmation email has been sent to " + 
+                "A confirmation email has been sent to " +
                 subscriber.email + ". Please click the link in " +
                 "this email to confirm your subscription");
 
