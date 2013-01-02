@@ -17,7 +17,7 @@ restart_pubcrawl() {
 
 start_pubcrawl
 
-inotifywait --format="%e %f" -mr src | while read event filename; do
+inotifywait --format="%e %f" -mr app lib | while read event filename; do
     if [[ "$event" = "CLOSE_WRITE,CLOSE" && \
           $(echo "$filename" | grep -Eo ".+\.(jade|js)$") != "" ]]; then
         echo "Sources modified, restarting..."

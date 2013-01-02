@@ -1,1 +1,1 @@
-../../src/pubcrawl.js
+../../lib/pubcrawl.js

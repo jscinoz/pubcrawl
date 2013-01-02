@@ -1,5 +1,5 @@
 .*.sw?
 npm-debug.log
-/src/webui/static/css/*.css
+/app/static/css/*.css
 /node_modules
 /haraka
