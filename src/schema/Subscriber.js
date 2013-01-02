@@ -5,6 +5,8 @@ var mongoose = require("mongoose"),
     ObjectId = Schema.ObjectId,
     Subscription = require("./Subscription"),
     Address = require("Haraka/address").Address,
+    outbound = require("Haraka/outbound"),
+    config = require("Haraka/config").get("pubcrawl", "json"),
     Q = require("q");
 
 
@@ -35,6 +37,45 @@ Subscriber.virtual("address").get(function() {
     return new Address(user, host);
 });
 
+Subscriber.method("sendConfirmationMessage", function(list) {
+    // TODO: Externalise confirmation message template
+    var from = list.name + "@" + config.serverName,
+        to = this.email,
+        subject = "Please confirm your subscription to the " +
+                  (list.displayName || list.name) + " mailing list",
+        body = "You, or someone at INSERT_SUBSCRIPTION_IP_HERE has requested " +
+               "a subscription for " + this.email + " to the mailing list '" + 
+               (list.displayName || list.name) + "'. If you requested this, " +
+               "and wish to confirm this subscription, please click the " +
+               "following link:\n\n" + "INSERT_CONFIRMATION_LINK_HERE",
+        message = [
+            "From: " + from,
+            "To: " + to,
+            "Subject: " + subject,
+            "", // Empty line delimiting headers and message body
+            body
+        ].join("\n"),
+        deferred = Q.defer();
+
+    // TODO: I was pretty drunk when i wrote this, re-do this, properly.
+
+
+    // We can't just use Q.ninvoke because the callback passed to send_email
+    // is invoked with (errcode, message), even when errcode indicates a success
+    // code. However, Q interprets any truthy value for the first argument to the
+    // callback as an error, causing the promise to be always be rejected.
+    outbound.send_email(from, to, message, function(code, msg) {
+        console.log("XXX code: " + code);
+        console.log("XXX msg: " + msg);
+        // TODO: Check code, and if error, reject promise
+
+        deferred.resolve();
+
+    });
+
+    return deferred.promise;
+});
+
 Subscriber.method("unsubscribe", function(list) {
     var subscriber = this,
         subscriptions = subscriber.subscriptions;
@@ -55,7 +96,8 @@ Subscriber.method("subscribe", function(list) {
 
     subscriptions.push(new Subscription({list: list}));
 
-    return Q.ninvoke(subscriber, "save");
+    return Q.ninvoke(subscriber, "save")
+        .then(this.sendConfirmationMessage.bind(this, list));
 });
 
 // Returns a boolean for whether or not the subscriber is subscribed to the
