@@ -12,6 +12,12 @@
         "connect-flash": "0.1.x",
         "q": "0.8.x"
     },
+    "devDependencies": {
+        "grunt": "0.4.x",
+        "grunt-contrib-jshint": "0.1.x",
+        "grunt-contrib-nodeunit": "0.1.x",
+        "grunt-contrib-watch": "0.1.x"
+    },
     "engines": {
         "node": "0.6.x"
     },
