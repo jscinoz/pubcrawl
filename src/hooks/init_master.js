@@ -5,6 +5,7 @@ module.exports = function (next) {
     var logger = require("Haraka/logger"), 
         config = require("Haraka/config").get("pubcrawl", "json"),
         mongoose = require("mongoose"),
+        modelSchemas = require("../util").modelSchemas,
         db = mongoose.connection;
 
     if (!config) {
@@ -23,6 +24,8 @@ module.exports = function (next) {
 
     db.once("open", function() {
         var WebUIServer = require("../webui/server");
+
+        modelSchemas();
 
         WebUIServer.start();
 
