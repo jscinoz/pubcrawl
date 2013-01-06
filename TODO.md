@@ -1,6 +1,8 @@
 * Use List-Id header (rfc2919)
+* Define common error types externally and refactor to use instead of generic
+  Error
 * Implement message archiving, and archive browsing interface
-* mother fucking unit tests, srsly guise
+* Needs moar tests
 * Add mechanism to re-send confirmation message
 * (un)Subscription needs to be atomic - currently if something goes wrong
   between List.subscribe and Subscriber.subscribe, DB can end up in inconsistent
