@@ -13,8 +13,6 @@ exports.create = function(req, res) {
         // Render list creation form
         return res.render("create-list");
     } else if (req.method === "POST") {
-        // TODO: request validation
-
         var params = req.body,
             list = new List({
                 name: params.listName,
@@ -23,16 +21,24 @@ exports.create = function(req, res) {
                 moderated: params.moderated === "true"
             });
 
-        list.save(function(err, list) {
-            if (err) {
-                return renderError(err, res);
-            }
-        
+        // TODO: request validation
+
+        // FIXME: This is allowing multiple lists with the same name for some
+        // reason, possibly a mongoose bug.
+        Q.ninvoke(list, "save")
+        .then(function() {
+            logger.logdebug(arguments);
+
+            logger.logdebug("XXX: DERP");
             req.flash("successMsgHead", "List created");
             req.flash("successMsgBody",
                 "List '" + (list.displayName ? list.displayName : list.name) +
                 "' created");
             res.redirect("/");
+        })
+        .fail(function(err) {
+            // TODO, proper error handling
+            logger.logerror(err.stack);
         });
     }
 };
