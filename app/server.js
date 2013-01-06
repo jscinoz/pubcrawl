@@ -36,6 +36,7 @@ exports.start = function() {
     webui.post("/subscribe", routes.list.subscribe);
     webui.post("/unsubscribe", routes.list.unsubscribe);
     webui.post("/create-list", routes.list.create);
+    webui.post("/resend-confirmation", routes.list.resendConfirmation);
 
     webui.listen("3000");
 

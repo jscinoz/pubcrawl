@@ -13,6 +13,13 @@ block content
               ul
                 for subscriber in list.subscribers
                   li= subscriber.email
+                    form(name="resend-#{list.id}-#{subscriber.email}",
+                         action="/resend-confirmation", method="post",
+                         class="form-inline")
+                      input(type="hidden", name="listId", value="#{list.id}")
+                      input(type="hidden", name="email",
+                            value="#{subscriber.email}")
+                      button(class="btn btn-inverse") Resend Confirmation
           form(name="subscribe-#{list.id}", action="/subscribe", method="post",
                class="form-inline")
             input(type="hidden", name="listId", value="#{list.id}")

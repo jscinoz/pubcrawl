@@ -150,3 +150,28 @@ exports.unsubscribe = function(req, res) {
         }
     });
 };
+
+exports.resendConfirmation = function(req, res) {
+    var params = req.body;
+
+    Subscription.findForEmailAndListId(params.email, params.listId)
+    .then(function(subscription) {
+        return subscription.sendConfirmation()
+        .then(subscription.getSubscriber.bind(subscription))
+    })
+    .then(function(subscriber) {
+        req.flash("successMsgHead", "Confirmation resent");
+        req.flash("successMsgBody",
+            "A confirmation email has been sent to " +
+            subscriber.email + ". Please click the link in " +
+            "this email to confirm your subscription");
+
+        res.redirect("/");
+    })
+    .fail(function(err) {
+        logger.logdebug("a wild error appears");
+        logger.logdebug(err);
+        logger.logdebug(err.stack);
+        // TODO: Handle error
+    });
+};
