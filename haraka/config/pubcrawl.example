@@ -1,0 +1,6 @@
+{
+    "serverHost": "server-hostname",
+    "frontendPort": 3000,
+    "dbHost": "localhost",
+    "dbName": "pubcrawl"
+}
