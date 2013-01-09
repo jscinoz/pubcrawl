@@ -1,4 +1,8 @@
 * Merge subscriber into subscription - having both types is redundant
+* See if unique: true actually on subscriber.name actually prevents duplicates
+  from being saved to the list object
+* Stop using objectids in URLs and postdata and just use subscriber email/list
+  name
 * Should [Subscription] be a subdocument of Subscriber?
 * Should List.subscribers be a virtual?
   * If so, add _subscribers, transient, to cache the list, do similar caching
