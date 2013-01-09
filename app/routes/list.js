@@ -3,11 +3,9 @@
 var Q = require("q"),
     mongoose = require("mongoose"),
     logger = require("Haraka/logger"),
-    List = mongoose.model("List", require("../../lib/schema/List")),
-    Subscriber = mongoose.model("Subscriber",
-                                require("../../lib/schema/Subscriber")),
-    Subscription = mongoose.model("Subscription",
-                                require("../../lib/schema/Subscription")),
+    List = mongoose.model("List"),
+    Subscriber = mongoose.model("Subscriber"),
+    Subscription = mongoose.model("Subscription"),
     renderError = require("../util").renderError;
 
 exports.create = function(req, res) {
