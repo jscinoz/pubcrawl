@@ -1,4 +1,16 @@
+* Merge subscriber into subscription - having both types is redundant
+* Should [Subscription] be a subdocument of Subscriber?
+* Should List.subscribers be a virtual?
+  * If so, add _subscribers, transient, to cache the list, do similar caching
+    elsewhere where appropriate
+* Refactor how subscribing/unsubscribing works, seems wrong that we have both
+  List.subscribe and Subscriber.subscribe
 * Use List-Id header (rfc2919)
+* Use mongoose populate instead of manually resolving objectids
+* THree list types:
+    * Discussion
+    * Announce
+    * Announce+Discuss (reply-to pointing to discussion list)
 * Define common error types externally and refactor to use instead of generic
   Error
 * Implement message archiving, and archive browsing interface
