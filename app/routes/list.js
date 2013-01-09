@@ -4,8 +4,6 @@ var Q = require("q"),
     mongoose = require("mongoose"),
     logger = require("Haraka/logger"),
     List = mongoose.model("List"),
-    Subscriber = mongoose.model("Subscriber"),
-    Subscription = mongoose.model("Subscription"),
     renderError = require("../util").renderError;
 
 exports.create = function(req, res) {
@@ -47,40 +45,16 @@ exports.subscribe = function(req, res) {
     var params = req.body;
     
     // TODO: request validation
-    Q.ninvoke(Subscriber, "findOne", {"email": params.email})
-    .then(function(subscriber) {
-        if (!subscriber) {
-            logger.logdebug("Creating new subscriber with address " +
-                         params.email);
-
-            subscriber = new Subscriber({
-                email: params.email
-            });
-
-            return Q.ninvoke(subscriber, "save")
-            .then(function() {
-                return subscriber;
-            });
-        }
-
-        logger.logdebug("Found existing subscriber with address " +
-                        params.email);
-
-        return subscriber;
+    
+    Q.ninvoke(List, "findById", params.listId)
+    .then(function(list) {
+        return list.subscribe(params.email, req.ip);
     })
-    .then(function(subscriber) {
-        return Q.ninvoke(List, "findById", params.listId)
-        .then(function(list) {
-            return list.subscribe(subscriber, req.ip);
-        }).then(function() {
-            return subscriber;
-        });
-    })
-    .then(function(subscriber) {
+    .then(function() {
         req.flash("successMsgHead", "Confirmation required");
         req.flash("successMsgBody",
             "A confirmation email has been sent to " +
-            subscriber.email + ". Please click the link in " +
+            params.email + ". Please click the link in " +
             "this email to confirm your subscription");
 
         res.redirect("/");
@@ -98,6 +72,7 @@ exports.subscribe = function(req, res) {
                 (err.list.displayName || err.list.name));
             res.redirect("/");
         } else {
+            logger.logerror(err.stack);
             renderError(res, err);
         }
     });
@@ -106,27 +81,18 @@ exports.subscribe = function(req, res) {
 exports.unsubscribe = function(req, res) {
     var params = req.body;
 
-    Q.ninvoke(Subscriber, "findOne", {"email": params.email})
-    .then(function(subscriber) {
-        if (!subscriber) {
-            throw new Error("Subscriber " + params.email +
-                            " not found");
-        }
-
-        logger.logdebug("Removing subscriber " + subscriber.email);
-
-        return Q.ninvoke(List, "findById", params.listId)
-        .then(function(list) {
-            return list.unsubscribe(subscriber)
-            .then(function() {
-                return [subscriber, list];
-            });
+    Q.ninvoke(List, "findById", params.listId)
+    .then(function(list) {
+        return list.unsubscribe(params.email)
+        .then(function() {
+            // Pass list forward to next step for flash message
+            return list;
         });
     })
-    .spread(function(subscriber, list) {
+    .then(function(list) {
         req.flash("successMsgHead", "Unsubscribe successful");
         req.flash("successMsgBody",
-            subscriber.email + " has been successfully unsubscribed " +
+            params.email + " has been successfully unsubscribed " +
             "from list " + (list.displayName || list.name));
 
         res.redirect("/");
@@ -134,16 +100,16 @@ exports.unsubscribe = function(req, res) {
     .fail(function(err) {
         if (err.name === "NoSuchSubscriber") {
             logger.logdebug("Attempted to remove non-existant " +
-                "subscriber " + err.subscriber.email + " from list " +
+                "subscriber " + err.email + " from list " +
                 (err.list.displayName || err.list.name));
 
             req.flash("errorMsgHead", "No such subscriber");
             req.flash("errorMsgBody",
-                "The email address " + err.subscriber.email +
-                " is not subscribed to the list " +
-                (err.list.displayName || err.list.name));
+                "The email address " + err.email + " is not subscribed to " +
+                "the list " + (err.list.displayName || err.list.name));
             res.redirect("/");
         } else {
+            logger.logerror(err.stack);
             renderError(res, err);
         }
     });
@@ -152,24 +118,20 @@ exports.unsubscribe = function(req, res) {
 exports.resendConfirmation = function(req, res) {
     var params = req.body;
 
-    Subscription.findForEmailAndListId(params.email, params.listId)
-    .then(function(subscription) {
-        return subscription.sendConfirmation()
-        .then(subscription.getSubscriber.bind(subscription))
+    Q.ninvoke(List, "findById", params.listId)
+    .then(function(list) {
+        list.resendConfirmation(params.email);
     })
-    .then(function(subscriber) {
+    .then(function() {
         req.flash("successMsgHead", "Confirmation resent");
         req.flash("successMsgBody",
             "A confirmation email has been sent to " +
-            subscriber.email + ". Please click the link in " +
+            params.email + ". Please click the link in " +
             "this email to confirm your subscription");
 
         res.redirect("/");
-    })
-    .fail(function(err) {
-        logger.logdebug("a wild error appears");
-        logger.logdebug(err);
-        logger.logdebug(err.stack);
-        // TODO: Handle error
+    }).fail(function(err) {
+        logger.logerror(err.stack);
+        renderError(res, err);
     });
 };
