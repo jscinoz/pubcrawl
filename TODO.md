@@ -3,14 +3,7 @@
   from being saved to the list object
 * Stop using objectids in URLs and postdata and just use subscriber email/list
   name
-* Should [Subscription] be a subdocument of Subscriber?
-* Should List.subscribers be a virtual?
-  * If so, add _subscribers, transient, to cache the list, do similar caching
-    elsewhere where appropriate
-* Refactor how subscribing/unsubscribing works, seems wrong that we have both
-  List.subscribe and Subscriber.subscribe
 * Use List-Id header (rfc2919)
-* Use mongoose populate instead of manually resolving objectids
 * THree list types:
     * Discussion
     * Announce
