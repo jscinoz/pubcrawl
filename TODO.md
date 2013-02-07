@@ -3,8 +3,9 @@
   from being saved to the list object
 * Stop using objectids in URLs and postdata and just use subscriber email/list
   name
+* Option for allowing emails to list without being on the list: Y/N/Moderated
 * Use List-Id header (rfc2919)
-* THree list types:
+* Three list types:
     * Discussion
     * Announce
     * Announce+Discuss (reply-to pointing to discussion list)
@@ -23,6 +24,8 @@
 * add virtual to list for list.name@config.serverName
 * Moderation by email too, or just webui?
 * API - Same routes, but different Accept: header for json/xml
+* Moderation filters
+  * a list of methods that if return false result in email being added to moderation queue
 * Web UI
     * List administration
     * User adminstration
