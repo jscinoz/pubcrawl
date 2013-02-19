@@ -33,3 +33,5 @@
     * Server configuration
         * IP bans
         * Haraka config in general?
+* Prioritise mail queue
+  * Moderation emails should take precedence over mailouts
